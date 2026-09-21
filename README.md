@@ -1,7 +1,3 @@
-# Sanskari
-
-> A programming language built from scratch with Python.
-
 **Sanskari** is an experimental programming language designed and implemented from the ground up to explore how programming languages work internally.
 
 The project is being built step by step, starting with a lexer and parser and gradually evolving into an interpreted and eventually compiled language.
