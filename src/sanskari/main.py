@@ -8,7 +8,7 @@ from .interpreter import Interpreter
 def main():
 
     if len(sys.argv) != 2:
-        print("Usage: python3 -m src.tlang.main <file.tl>")
+        print("Usage: python3 -m src.tlang.main <file.san>")
         return
 
     filename = sys.argv[1]

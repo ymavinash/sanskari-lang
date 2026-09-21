@@ -1,6 +1,6 @@
-# TLang
+# Sanskari Lang
 
-TLang is a programming language inspired by Telugu.
+Sanskari Lang is a programming language inspired by Indian languages and built from scratch using Python.
 
 ## Architecture
 
