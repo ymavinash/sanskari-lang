@@ -1,1 +1,1 @@
-cheppu("Namaskaram, t-lang!)
+cheppu("Namaskaram, t-lang!")
