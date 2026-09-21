@@ -5,10 +5,17 @@ from enum import Enum, auto
 class TokenType(Enum):
     CHEPPU = auto()
     STRING = auto()
+    
+
+    
+    PETTI = auto()
+    IDENTIFIER = auto()
+    EQUAL = auto()
+    NUMBER = auto()
 
     LEFT_PAREN = auto()
     RIGHT_PAREN = auto()
-
+    
     EOF = auto()
 
 
@@ -46,14 +53,25 @@ class Lexer:
                 )
                 self.position += 1
                 continue
+            if current == "=":
+                self.tokens.append(
+                Token(TokenType.EQUAL, current)
+                )
+                self.position += 1
+                continue
 
             if current == '"':
                 self.tokens.append(self.read_string())
                 continue
 
+            if current.isdigit():
+                self.tokens.append(self.read_number())
+                continue
+            
             if current.isalpha():
                 self.tokens.append(self.read_identifier())
                 continue
+            
 
             raise SyntaxError(
                 f"Unexpected character: '{current}'"
@@ -82,6 +100,20 @@ class Lexer:
 
         raise SyntaxError("Unterminated string")
     
+# understanding number
+    def read_number(self):
+        start = self.position
+
+        while (
+            self.position < len(self.source)
+            and self.source[self.position].isdigit()
+        ):
+            self.position += 1
+
+        value = self.source[start:self.position]
+
+        return Token(TokenType.NUMBER, value)
+    
 # understand cheppu
     def read_identifier(self):
         start = self.position
@@ -97,12 +129,17 @@ class Lexer:
         if value == "cheppu":
             return Token(TokenType.CHEPPU, value)
 
-        raise SyntaxError(
-            f"Unknown keyword: '{value}'"
-        )
+        if value == "petti":
+            return Token(TokenType.PETTI, value)
 
+        return Token(TokenType.IDENTIFIER, value)
+
+# testing
 # if __name__ == "__main__":
-#     source = 'cheppu("Namaskaram, TLang!")'
+#     source = '''
+#     petti naam = "Avinash"
+#     petti age = 22
+#     '''
 
 #     lexer = Lexer(source)
 #     tokens = lexer.tokenize()

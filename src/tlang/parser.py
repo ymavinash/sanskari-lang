@@ -1,5 +1,11 @@
 from .lexer import TokenType
-from .ast import PrintStatement, StringLiteral
+from .syntax_tree import (
+    PrintStatement,
+    StringLiteral,
+    NumberLiteral,
+    VariableExpression,
+    VariableDeclaration,
+)
 
 
 class Parser:
@@ -26,7 +32,10 @@ class Parser:
 
     def parse_statement(self):
         if self.current().type == TokenType.CHEPPU:
-            return self.parse_print()
+         return self.parse_print()
+
+        if self.current().type == TokenType.PETTI:
+            return self.parse_variable_declaration()
 
         raise SyntaxError(
             f"Unexpected token: {self.current().type}"
@@ -40,19 +49,63 @@ class Parser:
 
         self.advance()
 
-        if self.current().type != TokenType.STRING:
-            raise SyntaxError("Expected a string")
+        if self.current().type == TokenType.STRING:
+            value = StringLiteral(
+                self.advance().value
+            )
 
-        value = self.advance().value
+        elif self.current().type == TokenType.IDENTIFIER:
+            value = VariableExpression(
+                self.advance().value
+            )
+
+        else:
+            raise SyntaxError(
+                "Expected a string or variable"
+            )
 
         if self.current().type != TokenType.RIGHT_PAREN:
-            raise SyntaxError("Expected ')' after string")
+            raise SyntaxError("Expected ')' after expression")
 
         self.advance()
 
-        return PrintStatement(
-            StringLiteral(value)
+        return PrintStatement(value)
+        
+    def parse_variable_declaration(self):
+    # Consume 'petti'
+        self.advance()
+
+        if self.current().type != TokenType.IDENTIFIER:
+            raise SyntaxError(
+                "Expected variable name after petti"
+            )
+
+        name = self.advance().value
+
+        if self.current().type != TokenType.EQUAL:
+            raise SyntaxError(
+                "Expected '=' after variable name"
+            )
+
+        self.advance()
+
+        if self.current().type == TokenType.STRING:
+            value = StringLiteral(
+                self.advance().value
+            )
+
+        elif self.current().type == TokenType.NUMBER:
+            value = NumberLiteral(
+            int(self.advance().value)
+            )
+
+        else:
+            raise SyntaxError(
+            "Expected a string or number"
+            )
+
+        return VariableDeclaration(
+            name=name,
+            initializer=value,
         )
         
-if __name__ == "__main__":
-    from .lexer import Lexer
